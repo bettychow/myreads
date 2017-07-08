@@ -20,6 +20,7 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
+      console.log('books', books)
       this.setState({ books })
     })
   }
@@ -32,7 +33,11 @@ class BooksApp extends React.Component {
     })
   }
 
-    
+  switchShelf(result, shelf) {
+    console.log('kkk', result)
+    console.log('shelf', shelf)
+    console.log(BooksAPI.update(result, shelf))
+  }
 
   render() {
   
@@ -44,10 +49,9 @@ class BooksApp extends React.Component {
         
           <SearchPage
             books={this.state.books}
-            result={this.state.results}
-            onSearchBooks={(query) => {
-              this.searchBooks(query)
-            } }
+            results={this.state.results}
+            onSearchBooks={query => this.searchBooks(query)}
+            handleShelfChange={(result, shelf) => { this.switchShelf(result, shelf)} }
           /> 
 
       </div>

@@ -4,9 +4,10 @@ import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 
 
+
 class SearchPage extends Component {
     state = {
-        query: ''
+        query: '',
     }
 
 
@@ -21,20 +22,21 @@ class SearchPage extends Component {
 
         
     render() {
-        const { books, results, onSearchBooks } = this.props
+        const { books, results, onSearchBooks, handleShelfChange } = this.props
         const { query } = this.state
         let showingResults
     
      if (query) {
          const match = new RegExp(escapeRegExp(query), 'i');
-        
-          console.log('resultsxxx' , results)
-      showingResults = books.filter((book) =>
-        match.test(book.title))
+         showingResults = results.filter((result) =>
+         match.test(result.title))
      } else {
          showingResults = []
      }
          showingResults.sort(sortBy('title'))
+
+
+      
 
         return (
             <div className="search-books">
@@ -45,9 +47,9 @@ class SearchPage extends Component {
                                    placeholder="Search by title or author" 
                                    value={query}
                                    onChange={
-                                       (event, query) => {
+                                       (event) => {
                                         this.updateQuery(event.target.value)
-                                        onSearchBooks(query)
+                                        onSearchBooks(event.target.value)
                                        }}
                             />
                                    
@@ -58,11 +60,20 @@ class SearchPage extends Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        { showingResults.map((book) => (
-                            <li key={book.title}>
-                                <img src={book.imageLinks.thumbnail}/>
-                                <p>{book.title} - {book.subtitle}</p>
-                                <p>{book.authors}</p>
+                        { showingResults.map((result) => (
+                            <li key={result.industryIdentifiers[0].identifier}>
+                                <img className="book-cover" style={{ width: 128, height: 193}} src={result.imageLinks.thumbnail}/>
+                                <p>{result.title} - {result.subtitle}</p>
+                                <p>{result.authors}</p>
+                                <div>
+                                <select value={result.shelf} onChange={event => handleShelfChange(result, event.target.value)}>
+                                    <option value="none" disabled>Move to...</option>
+                                    <option value="currentlyReading">Currently Reading</option>
+                                    <option value="wantToRead">Want to Read</option>
+                                    <option value="read">Read</option>
+                                    <option value="none ">None</option>
+                                </select>
+                                </div>
                             </li>
                         ))}
 

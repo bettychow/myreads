@@ -13,7 +13,7 @@ const headers = {
 }
 
 export const get = (bookId) =>
-  fetch(`${api}/books/${bookId}`, { headers })
+  fetch(`${api}/books/${bookId}`, { headers }) 
     .then(res => res.json())
     .then(data => data.book)
 
