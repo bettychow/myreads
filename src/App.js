@@ -14,7 +14,7 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     books: [],
-    results: [],
+    searchResults: [],
     showSearchPage: true
   }
 
@@ -23,20 +23,25 @@ class BooksApp extends React.Component {
       console.log('books', books)
       this.setState({ books })
     })
-  }
+  } 
 
   searchBooks(query) {
-    BooksAPI.search(query, 20).then((results) => {
-      console.log('query', query)
-      console.log('results', results)
-      this.setState({ results })
-    })
+    BooksAPI.search(query, 20).then(resultsFromTheAPI => {
+	resultsFromTheAPI.map(rBook => { 
+		this.state.books.map(pBook => {
+			if(rBook.id === pBook.id) {
+				rBook.shelf = pBook.shelf;
+			}
+		})
+	})
+
+	this.setState({ searchResults: resultsFromTheAPI });	
+})
   }
 
   switchShelf(result, shelf) {
-    console.log('kkk', result)
-    console.log('shelf', shelf)
-    console.log(BooksAPI.update(result, shelf))
+    
+    BooksAPI.update(result, shelf)
   }
 
   render() {
@@ -49,7 +54,7 @@ class BooksApp extends React.Component {
         
           <SearchPage
             books={this.state.books}
-            results={this.state.results}
+            searchResults={this.state.searchResults}
             onSearchBooks={query => this.searchBooks(query)}
             handleShelfChange={(result, shelf) => { this.switchShelf(result, shelf)} }
           /> 

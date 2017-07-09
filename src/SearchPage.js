@@ -8,6 +8,7 @@ import sortBy from 'sort-by'
 class SearchPage extends Component {
     state = {
         query: '',
+        shelf: ''
     }
 
 
@@ -20,15 +21,20 @@ class SearchPage extends Component {
         this.setState({ query: ''})
     }
 
+    
+
+
+    
+    
         
     render() {
-        const { books, results, onSearchBooks, handleShelfChange } = this.props
+        const { books, searchResults, onSearchBooks, handleShelfChange } = this.props
         const { query } = this.state
         let showingResults
     
      if (query) {
          const match = new RegExp(escapeRegExp(query), 'i');
-         showingResults = results.filter((result) =>
+         showingResults = searchResults.filter((result) =>
          match.test(result.title))
      } else {
          showingResults = []
