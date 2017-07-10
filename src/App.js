@@ -39,26 +39,38 @@ class BooksApp extends React.Component {
 })
   }
 
-  switchShelf(result, shelf) {
+  switchShelf(result, newShelf) {
+    console.log('newShelf', newShelf);
+    console.log('reuslt', result)
+    BooksAPI.update(result, newShelf)
+        this.state.searchResults.map((book) => {
+          console.log('kkk', result.id)
+          if(book.id === result.id ) {
+            book.shelf = newShelf
+          }
+          })
+        
     
-    BooksAPI.update(result, shelf)
+    this.setState({ searchResults: this.state.searchResults })
+    console.log('lll', this.state.searchResults)
   }
+  
 
   render() {
   
     return (
       <div className="app">
-        
+        <Route exact path="/" render={() => (
           <BookShelves/>
-
-        
+        )}/>
+         <Route exact path="/search" render={() => (
           <SearchPage
             books={this.state.books}
             searchResults={this.state.searchResults}
             onSearchBooks={query => this.searchBooks(query)}
             handleShelfChange={(result, shelf) => { this.switchShelf(result, shelf)} }
           /> 
-
+         )}/>
       </div>
     )
   }

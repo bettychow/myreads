@@ -68,7 +68,7 @@ class SearchPage extends Component {
                     <ol className="books-grid">
                         { showingResults.map((result) => (
                             <li key={result.industryIdentifiers[0].identifier}>
-                                <img className="book-cover" style={{ width: 128, height: 193}} src={result.imageLinks.thumbnail}/>
+                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${result.imageLinks.thumbnail})`}}></div>
                                 <p>{result.title} - {result.subtitle}</p>
                                 <p>{result.authors}</p>
                                 <div>
