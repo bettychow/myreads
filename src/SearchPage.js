@@ -2,15 +2,12 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
-
-
+import Book from './Book'
 
 class SearchPage extends Component {
     state = {
-        query: '',
-        shelf: ''
+        query: ''
     }
-
 
     updateQuery = (query) => {
         this.setState({ query: query.trim() })
@@ -21,14 +18,8 @@ class SearchPage extends Component {
         this.setState({ query: ''})
     }
 
-    
-
-
-    
-    
-        
     render() {
-        const { books, searchResults, onSearchBooks, handleShelfChange } = this.props
+        const { books, searchResults, onSearchBooks, switchShelf } = this.props
         const { query } = this.state
         let showingResults
     
@@ -40,49 +31,31 @@ class SearchPage extends Component {
          showingResults = []
      }
          showingResults.sort(sortBy('title'))
-
-
       
-
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                    <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-                        <div className="search-books-input-wrapper">
-                            <input type="text" 
-                                   placeholder="Search by title or author" 
-                                   value={query}
-                                   onChange={
-                                       (event) => {
+                    <Link to="/" className="close-search">Close</Link>
+                    <div className="search-books-input-wrapper">
+                        <input type="text" 
+                                placeholder="Search by title or author" 
+                                value={query}
+                                onChange={
+                                    (event) => {
                                         this.updateQuery(event.target.value)
                                         onSearchBooks(event.target.value)
-                                       }}
-                            />
-                                   
-                        </div>
+                                    }}
+                        />                    
                     </div>
-                <div>
                     <button onClick={this.clearQuery}>Clear</button>
-                </div>
+                </div>          
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        { showingResults.map((result) => (
-                            <li key={result.industryIdentifiers[0].identifier}>
-                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${result.imageLinks.thumbnail})`}}></div>
-                                <p>{result.title} - {result.subtitle}</p>
-                                <p>{result.authors}</p>
-                                <div>
-                                <select value={result.shelf} onChange={event => handleShelfChange(result, event.target.value)}>
-                                    <option value="none" disabled>Move to...</option>
-                                    <option value="currentlyReading">Currently Reading</option>
-                                    <option value="wantToRead">Want to Read</option>
-                                    <option value="read">Read</option>
-                                    <option value="none ">None</option>
-                                </select>
-                                </div>
+                        { showingResults.map((book) => (
+                            <li key={book.id}>
+                                <Book book={book} switchShelf={this.props.switchShelf} />
                             </li>
                         ))}
-
                     </ol>
                 </div>
             </div>
