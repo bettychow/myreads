@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import BookShelves from './BookShelves' 
@@ -10,10 +10,11 @@ class BooksApp extends React.Component {
     books: [],
     searchResults: [],
   }
-  
+ 
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
+      console.log(books)
       this.setState({ books })
     })
   } 
@@ -31,24 +32,28 @@ class BooksApp extends React.Component {
     })
   }
 
-  updateShelf(result, newShelf) {
-    console.log('newShelf', newShelf);
-    console.log('reuslt', result)
-    BooksAPI.update(result, newShelf)
-        this.state.searchResults.map((book) => {
-          console.log('kkk', result.id)
-          if(book.id === result.id ) {
-            book.shelf = newShelf
-          }
-          })
+  updateShelf(selectedBook, newShelf) {
+    BooksAPI.update(selectedBook, newShelf)
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
-      console.log('books', books)
-
     })    
     
+    this.state.searchResults.map(book => {
+      if(book.id === selectedBook.id ) {
+        book.shelf = newShelf
+        }
+    })  
     this.setState({ searchResults: this.state.searchResults })
-    console.log('lll', this.state.searchResults)
+  }
+
+  calPercentDone(bookSelected,pageNum) {
+       console.log('book', bookSelected)
+    this.state.books.map(book => {
+      if(book.id === bookSelected) {
+        book.percentDone = parseInt(pageNum)/book.pageCount
+      }
+    })
+    this.setState({ books: this.state.books })
   }
   
   render() {
@@ -58,7 +63,8 @@ class BooksApp extends React.Component {
           <Route exact path="/" render={() => (
             <BookShelves 
               books={this.state.books}
-              switchShelf={(result, shelf) => { this.updateShelf(result, shelf)}}
+              switchShelf={(selectedBook, newShelf) => { this.updateShelf(selectedBook, newShelf)}}
+              percentDone={(bookSelected, pageNum) => {this.calPercentDone(bookSelected, pageNum)}}
             />
           )}/>
           <Route exact path="/search" render={() => (
@@ -66,7 +72,7 @@ class BooksApp extends React.Component {
               books={this.state.books}
               searchResults={this.state.searchResults}
               onSearchBooks={query => this.searchBooks(query)}
-              switchShelf={(result, shelf) => { this.updateShelf(result, shelf)} }
+              switchShelf={(selectedBook, newShelf) => { this.updateShelf(selectedBook, newShelf)} }
             /> 
           )}/>
         </div>

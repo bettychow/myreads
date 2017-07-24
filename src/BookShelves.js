@@ -1,8 +1,22 @@
 import React, { Component } from 'react'
 import Book from './Book'
 import { Link } from 'react-router-dom'
+import serializeForm from 'form-serialize'
 
 class BookShelves extends Component {
+    
+    state = {value: ''};
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(bookId, event) {
+   if(event) event.preventDefault();
+   if (this.props.percentDone) {
+            this.props.percentDone(bookId, this.state.value)}
+  
+  }
 
     render() {
        
@@ -27,7 +41,15 @@ class BookShelves extends Component {
                         <ol className="books-grid">
                             { currentlyReading.map((book) => (
                             <li key={book.id}>
-                                <Book book={book} switchShelf={this.props.switchShelf} />
+                                <Book book={book} changeShelf={this.props.switchShelf} />
+                                <form onSubmit={this.handleSubmit(book.id)}>
+                                  <label>
+                                    Page you are on:
+                                    <input type="text" value={this.state.value} onChange={this.handleChange}/>
+                                  </label>
+                                  <input type="submit" value="Submit" />
+                                </form>
+                                <p>{book.percentDone}</p>
                             </li>
                         ))}
                         </ol>
@@ -39,7 +61,7 @@ class BookShelves extends Component {
                         <ol className="books-grid">
                             { wantToRead.map((book) => (
                             <li key={book.id}>
-                                <Book book={book} switchShelf={this.props.switchShelf} />
+                                <Book book={book} changeShelf={this.props.switchShelf} />
                             </li>
                         ))}
                         </ol>
@@ -51,7 +73,7 @@ class BookShelves extends Component {
                         <ol className="books-grid">
                              { read.map((book) => (
                             <li key={book.id}>
-                                <Book book={book} switchShelf={this.props.switchShelf} />
+                                <Book book={book} changeShelf={this.props.switchShelf} />
                             </li>
                         ))}
                         </ol>

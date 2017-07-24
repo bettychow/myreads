@@ -6,12 +6,11 @@ import Book from './Book'
 
 class SearchPage extends Component {
     state = {
-        query: ''
+        query: '',
     }
 
     updateQuery = (query) => {
         this.setState({ query: query.trim() })
-
     }
 
     clearQuery = () => {
@@ -19,14 +18,18 @@ class SearchPage extends Component {
     }
 
     render() {
-        const { books, searchResults, onSearchBooks, switchShelf } = this.props
+        const { searchResults, onSearchBooks } = this.props
         const { query } = this.state
         let showingResults
-    
+        let errorMessage
+
      if (query) {
          const match = new RegExp(escapeRegExp(query), 'i');
          showingResults = searchResults.filter((result) =>
          match.test(result.title))
+         if (showingResults.length === 0) {
+             errorMessage = 'Your query returns zero results!'
+         }
      } else {
          showingResults = []
      }
@@ -47,16 +50,17 @@ class SearchPage extends Component {
                                     }}
                         />                    
                     </div>
-                    <button onClick={this.clearQuery}>Clear</button>
+                    <button onClick={() => this.clearQuery()}>Clear</button>
                 </div>          
                 <div className="search-books-results">
                     <ol className="books-grid">
                         { showingResults.map((book) => (
                             <li key={book.id}>
-                                <Book book={book} switchShelf={this.props.switchShelf} />
+                                <Book book={book} changeShelf={this.props.switchShelf} />
                             </li>
                         ))}
                     </ol>
+                    <p>{errorMessage}</p>
                 </div>
             </div>
 
