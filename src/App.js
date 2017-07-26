@@ -10,11 +10,9 @@ class BooksApp extends React.Component {
     books: [],
     searchResults: [],
   }
- 
 
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      console.log(books)
+    BooksAPI.getAll().then(books => {
       this.setState({ books })
     })
   } 
@@ -27,14 +25,14 @@ class BooksApp extends React.Component {
             rBook.shelf = pBook.shelf;
           }
         })
-	  })
-    this.setState({ searchResults: resultsFromTheAPI });	
+	    })
+      this.setState({ searchResults: resultsFromTheAPI });	
     })
   }
 
   updateShelf(selectedBook, newShelf) {
     BooksAPI.update(selectedBook, newShelf)
-    BooksAPI.getAll().then((books) => {
+    BooksAPI.getAll().then(books => {
       this.setState({ books })
     })    
     
@@ -45,16 +43,6 @@ class BooksApp extends React.Component {
     })  
     this.setState({ searchResults: this.state.searchResults })
   }
-
-  calPercentDone(bookSelected,pageNum) {
-       console.log('book', bookSelected)
-    this.state.books.map(book => {
-      if(book.id === bookSelected) {
-        book.percentDone = parseInt(pageNum)/book.pageCount
-      }
-    })
-    this.setState({ books: this.state.books })
-  }
   
   render() {
   
@@ -63,13 +51,11 @@ class BooksApp extends React.Component {
           <Route exact path="/" render={() => (
             <BookShelves 
               books={this.state.books}
-              switchShelf={(selectedBook, newShelf) => { this.updateShelf(selectedBook, newShelf)}}
-              percentDone={(bookSelected, pageNum) => {this.calPercentDone(bookSelected, pageNum)}}
+              switchShelf={(selectedBook, newShelf) => { this.updateShelf(selectedBook, newShelf)}}  
             />
           )}/>
           <Route exact path="/search" render={() => (
             <SearchPage
-              books={this.state.books}
               searchResults={this.state.searchResults}
               onSearchBooks={query => this.searchBooks(query)}
               switchShelf={(selectedBook, newShelf) => { this.updateShelf(selectedBook, newShelf)} }
